@@ -1,3 +1,5 @@
+'use strict';
+
 function routesVersioning() {
    return function(args, notFoundMiddleware) {
       if (!args || typeof(args) !== 'object' ||
@@ -53,8 +55,8 @@ function routesVersioning() {
             key = findLatestVersion(keys);
             args[key].call(that, req, res, next);
          }
-      }
-   }
+      };
+   };
 }
 
 
@@ -103,16 +105,14 @@ function  findLatestVersion(versions) {
  * Gets the version of the application either from accept-version headers
  * or req.version property
  **/
-function getVersion(req) {
-   var version;
-   if (!req.version) {
-      if (req.headers && req.headers['accept-version']) {
-         version = req.headers['accept-version'];
-      }
-   } else {
-      version = req.version;
-   }
-   return version;
+function getVersion(request) {
+  var version = request.version;
+
+  if (request.headers && (request.headers['accept-version'] || request.headers.accept)) {
+    version = request.headers['accept-version'] || request.headers.accept;
+  }
+
+  return version;
 }
 
 module.exports = routesVersioning;
